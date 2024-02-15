@@ -1,0 +1,153 @@
+/* body{
+    overflow-x:  hidden ;
+    overflow-y:  hidden ;
+} */
+
+body::-webkit-scrollbar {
+    width: 8px; /* Ancho de la barra de desplazamiento */
+  }
+body::-webkit-scrollbar-thumb {
+    background-color: #333; 
+  }
+body::-webkit-scrollbar-track {
+    background-color: #1a1a1a; 
+  }
+
+.lazy-bkg{
+    margin: 0;
+    padding: 0;
+    background-image: url('../public/bkg.png');
+    background-size: contain;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    top: -100px; 
+    transition: opacity .5s;
+}
+
+.carrusel-oferta {
+    height: 30px;
+    width: 100vw;
+    position: fixed;
+    top: 0;
+    left: 0;
+    overflow: hidden;
+    background-color: #000;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    transition: top .3s;
+  }
+  
+  .carrusel-oferta h5 {
+    color: #fff;
+    font-size: 12px;
+    white-space: nowrap;
+    animation: desplazamiento 15s linear infinite;
+    height: 12px;
+    margin: 0;
+    padding: 0;
+    
+ }
+  
+  @keyframes desplazamiento {
+    0% {
+      transform: translateX(100vw);
+    }
+  
+    100% {
+      transform: translateX(-100%);
+    }
+  }
+
+.header{
+    width: 100vw;
+    height: 140px;
+    position: fixed;
+    z-index: 1000;
+    top: 30px;
+    transition: top 0.3s, background .6s ease;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .header:hover{
+  background: #ffffff;
+}
+
+
+
+.header-top {
+    width: 100vw;
+    height: 90px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.header-top-icono-1 {
+    height: 100%;
+    width: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+
+}
+
+
+.header-top-logo {
+    height: 100%;
+    width: 2em;}
+
+
+.header-top-icono-2 {
+    height: 100%;
+    width: 60px;
+}
+
+.header-bottom {
+    width: 100vw;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    list-style-type: none;
+    margin: 0;
+  }
+
+  
+.header-bottom li{
+margin: 10px;
+}
+
+.header-bottom a{
+text-decoration: none;
+color: #868686;
+font-size: 14px;
+padding: 4px;
+}
+
+.header-hidden{
+    width: 100vw;
+    height: 50px;
+    visibility: hidden;
+    opacity: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    list-style-type: none;
+    transition: opacity .6s ease,visibility .6s ease;
+    background-color: #ffffff;
+}
+
+.header-hidden a{
+  text-decoration: none;
+  color: #868686;
+font-size: 14px;
+font-weight: 500;
+padding: 4px;
+}
+

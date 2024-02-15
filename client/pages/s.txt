@@ -1,0 +1,239 @@
+import React, { useState, useRef, useEffect } from 'react';
+import Image from 'next/image';
+import api from "./api/users/index";
+import Link from 'next/link';
+import Header from '../components/Header'
+
+interface Productos {
+  id : number;
+  titulo : string;
+  category : string;
+  description : string;
+  es_ingreso : boolean;
+  precio_nuevo : number;
+  precio_viejo : number;
+  codigo_de_barra : string;
+  }
+
+const Index: React.FC = () => {
+  
+  const mainRef = useRef<HTMLDivElement>(null);
+  const hiddenHeaderRef = useRef<HTMLUListElement>(null);
+  const prevScrollY = useRef(0);
+
+  const [produ, setProdu] = useState<Productos[]>([]);
+  const [formDataProdu, setFormDataProdu] = useState({
+    titulo: '',
+    category: '',
+    description: '',
+    es_ingreso: false,
+    precio_nuevo: 0,
+    precio_viejo:0,
+    codigo_de_barra:'',
+  });const [visible, setVisible] = useState(true);
+  const [apiDataReceived, setApiDataReceived] = useState(false);
+  const [numero, setNumero] = useState(0)
+  const [carruselTop,setCarruselTop] = useState<number>(0)
+
+//api  
+  const fetchProductos = async () => {
+    try {
+      const response = await api.get<Productos[]>('/productos/');
+      setProdu(response.data);
+      console.log('Información de la API recibida:', response);
+      setTimeout(() => {
+        setApiDataReceived(true);
+      }, 5000);
+    } catch (error) {
+      console.error('Error al obtener datos de la API:', error);
+    }
+  };
+//api
+  useEffect(() => {
+    fetchProductos();
+  }, []);
+
+  useEffect(() => {
+    if (numero < 1000) {
+      const intervalId = setInterval(() => {
+        setVisible((prevVisible) => !prevVisible);
+      }, visible ? 1000 : 500);
+
+      return () => clearInterval(intervalId);
+    }
+  }, [visible, numero]);
+
+  if (apiDataReceived === true && numero < 1009) {
+    setTimeout(() => { setNumero(e => e = e + 1) }, 1);
+  }
+
+  if (apiDataReceived === true) {
+    const body = mainRef.current?.parentElement?.parentElement;
+    if (body) {
+      body.style.overflowY = 'auto';
+    }
+  }
+
+  useEffect(() => {
+    const handleBeforeUnload = () => window.scrollTo(0, 0);
+    window.onbeforeunload = handleBeforeUnload;
+    return () => {
+      window.onbeforeunload = null;
+    };
+  }, []);
+
+
+//scroll y -up -down  
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+
+      if (currentScrollY > prevScrollY.current) {
+        setCarruselTop(e=>e=-30)
+        console.log('Desplazamiento hacia abajo');
+      } else if (currentScrollY < prevScrollY.current) {
+        setCarruselTop(e=>e=0)
+        console.log('Desplazamiento hacia arriba');
+      }
+      prevScrollY.current = currentScrollY;
+    };
+
+    window.addEventListener('scroll', handleScroll);
+
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+
+
+  const handleMouseOver = () => {
+    hiddenHeaderRef.current.style.visibility = 'visible';
+    hiddenHeaderRef.current.style.opacity = '1';
+    // hiddenHeaderRef.current.style.background = 'black';
+  };
+  
+  const handleMouseOut = () => {
+    hiddenHeaderRef.current.style.visibility = 'hidden';
+    hiddenHeaderRef.current.style.opacity = '0';
+    // hiddenHeaderRef.current.style.background = 'yellow';
+  };
+
+      
+      
+
+
+  return (
+    <div className='contain-main' ref={mainRef}>
+      {<div className='lazy-bkg' style={{ position: 'absolute', transitionProperty: 'top', top: `-${numero}%`, display: `${(numero >= 1000) && (numero <= 2000) ? 'none' : 'flex'}`, transition: '5s', zIndex: '10000' }}>
+        {visible && (
+          <Image
+            src="/logo.png"
+            alt="Descripción de la imagen"
+            width={250}
+            height={250}
+          />
+        )}
+      </div>}
+
+      {/* {(apiDataReceived === true )  && ( */}
+      <div>
+        <div className='carrusel-oferta' style={{top:`${carruselTop}px`}}>
+          <h5>SUMMMMER SALE! - 3 CUOTAS SIN INTERÉS & 6 CUOTAS SIN INTERÉS EN COMPRAS MAYORES A $80.000 </h5>
+        </div>
+
+        <Header props={carruselTop} />
+        {/* <div className='header' onMouseLeave={handleMouseOut} style={{top:`${carruselTop + 30}px`}}>
+          <div className='header-top'>
+            
+            <div className='header-top-icono-1'>
+              <Image
+              src="/icon-search.svg"
+              alt="lupa"
+              width={30}
+              height={30}
+              />
+            </div>
+            
+            <Image
+            src="/nombre-alpha.png"
+            alt="Descripción de la imagen"
+            width={(1508*65)/474}
+            height={65}
+            />
+          
+            <div className='header-top-icono-2'></div>
+          
+          </div>
+          <ul className='header-bottom' >
+        <li>
+          <Link href="/">
+            INICIO
+          </Link>
+        </li>
+
+        <li
+          className='ofertas-hidden'
+          onMouseEnter ={handleMouseOver}
+        >
+           
+      
+          <Link href="/">
+            OFERTAS
+          </Link>
+          <Image
+            src='/arrow-down.svg'
+            alt=''
+            width={14}
+            height={14}
+          />
+        </li>
+
+        <li>
+          <Link href="/newin">
+            NUEVO
+          </Link>
+        </li>
+      </ul>
+
+      <ul className='header-hidden'  ref={hiddenHeaderRef}>
+          <li>
+            <Link href='/'>
+              BUZOS
+            </Link>
+          </li>
+
+          <li>
+            <Link href='/'>
+              CAMPERAS
+            </Link>
+          </li>
+
+          <li>
+            <Link href='/'>
+              REMERAS
+            </Link>
+          </li>
+
+          <li>
+            <Link href='/'>
+              BUFANDAS
+            </Link>
+          </li>
+      </ul>    
+
+
+        </div> */}
+        <div style={{ width: '100vw', height: '104.235vw', position: 'relative' }}>
+          <Image
+            src="/main.png"
+            alt="Descripción de la imagen"
+            layout="fill"
+            objectFit="cover"
+          />
+        </div>
+      </div>
+      {/* )} */}
+    </div>
+  );
+};
+
+export default Index;
