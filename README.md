@@ -1,0 +1,1 @@
+![alt text](client/public/assets/publi/precen_1.png) ![alt text](client/public/assets/publi/precen_2.png) ![alt text](client/public/assets/publi/precen_3.png) ![alt text](client/public/assets/publi/precen_4.png)
